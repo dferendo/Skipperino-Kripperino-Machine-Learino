@@ -1,16 +1,15 @@
 import configparser
 import os
 import logging
-
-# Logging
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-
-# add formatter to ch
-ch.setFormatter(formatter)
+import logging.config
 
 currentPath = os.path.dirname(os.path.realpath(__file__))
+configFileLocation = currentPath + '\\..\\configs.conf'
+
 config = configparser.ConfigParser()
 config.sections()
-config.read(currentPath + '\\..\\config.ini')
+config.read(configFileLocation)
 
-print(config['General']['YoutubeChannelId'])
+logging.config.fileConfig(configFileLocation)
+
+logging.debug("TEST")
