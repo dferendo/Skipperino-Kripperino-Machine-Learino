@@ -1,7 +1,7 @@
-import configparser
-import os
-import logging
 from googleapiclient.discovery import build
+import json
+import logging
+
 
 API_SERVICE_NAME = 'youtube'
 API_VERSION = 'v3'
@@ -13,9 +13,13 @@ logging.basicConfig(filename="logging.log", format="%(asctime)s - %(name)s - %(l
 
 client = build(API_SERVICE_NAME, API_VERSION, developerKey=API_KEY)
 
-channelParameters = {
+channel_parameters = {
     'part': 'contentDetails',
     'id': CHANNEL_ID
 }
 
-print(client.channels().list(channelParameters).execute())
+channel_info = client.channels().list(**channel_parameters).execute()
+playlist_id = channel_info['items'][0]['contentDetails']['relatedPlaylists']['uploads']
+
+
+print(playlist_id)
