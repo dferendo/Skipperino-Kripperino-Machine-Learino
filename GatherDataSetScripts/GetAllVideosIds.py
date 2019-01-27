@@ -1,9 +1,11 @@
+import GatherDataSetScripts.Video as VideoClass
+import json
 
 
-def get_videos_ids(client):
+def get_videos_ids(client, channel_id, data_set_location):
     channel_parameters = {
         'part': 'contentDetails',
-        'id': CHANNEL_ID
+        'id': channel_id
     }
 
     channel_info = client.channels().list(**channel_parameters).execute()
@@ -24,8 +26,8 @@ def get_videos_ids(client):
         for video in uploaded_videos['items']:
             content_details_video = video['contentDetails']
 
-            videos.append(Video(content_details_video['videoId'], content_details_video['videoPublishedAt'], "",
-                                False, "", False))
+            videos.append(VideoClass.Video(content_details_video['videoId'], content_details_video['videoPublishedAt'],
+                                           "", False, "", False))
 
         if 'nextPageToken' in uploaded_videos:
             next_page_token = uploaded_videos['nextPageToken']
@@ -36,5 +38,5 @@ def get_videos_ids(client):
         else:
             break
 
-    with open(VIDEOS_DATA_LOCATION, 'w') as out_file:
+    with open(data_set_location, 'w') as out_file:
         json.dump([video.__dict__ for video in videos], out_file)
