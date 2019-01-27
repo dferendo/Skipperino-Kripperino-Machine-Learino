@@ -20,41 +20,46 @@ CHANNEL_ID = 'UCeBMccz-PDZf6OB4aV6a3eA'
 logging.basicConfig(filename="logging.log", format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
                     level=logging.DEBUG)
 
-client = build(API_SERVICE_NAME, API_VERSION, developerKey=API_KEY)
 
-channel_parameters = {
-    'part': 'contentDetails',
-    'id': CHANNEL_ID
-}
+def get_videos_ids():
+    channel_parameters = {
+        'part': 'contentDetails',
+        'id': CHANNEL_ID
+    }
 
-channel_info = client.channels().list(**channel_parameters).execute()
-playlist_id = channel_info['items'][0]['contentDetails']['relatedPlaylists']['uploads']
+    channel_info = client.channels().list(**channel_parameters).execute()
+    playlist_id = channel_info['items'][0]['contentDetails']['relatedPlaylists']['uploads']
 
-videos = []
-pageToken = ""
-playlist_parameters = {
-    'part': 'contentDetails',
-    'playlistId': playlist_id,
-    'maxResults': 50
-}
+    videos = []
+    page_token = ""
+    playlist_parameters = {
+        'part': 'contentDetails',
+        'playlistId': playlist_id,
+        'maxResults': 50
+    }
 
-while True:
-    playlist_parameters['pageToken'] = pageToken
-    uploaded_videos = client.playlistItems().list(**playlist_parameters).execute()
+    while True:
+        playlist_parameters['pageToken'] = page_token
+        uploaded_videos = client.playlistItems().list(**playlist_parameters).execute()
 
-    for video in uploaded_videos['items']:
-        content_details_video = video['contentDetails']
+        for video in uploaded_videos['items']:
+            content_details_video = video['contentDetails']
 
-        videos.append(Video(content_details_video['videoId'], content_details_video['videoPublishedAt']))
+            videos.append(Video(content_details_video['videoId'], content_details_video['videoPublishedAt']))
 
-    if 'nextPageToken' in uploaded_videos:
-        next_page_token = uploaded_videos['nextPageToken']
-        pageToken = next_page_token
+        if 'nextPageToken' in uploaded_videos:
+            next_page_token = uploaded_videos['nextPageToken']
+            page_token = next_page_token
 
-        if next_page_token == "":
+            if next_page_token == "":
+                break
+        else:
             break
-    else:
-        break
 
-with open('./DataSet/videos.json', 'w') as out_file:
-    json.dump([video.__dict__ for video in videos], out_file)
+    with open('./DataSet/videos.json', 'w') as out_file:
+        json.dump([video.__dict__ for video in videos], out_file)
+
+
+client = build(API_SERVICE_NAME, API_VERSION, developerKey=API_KEY)
+# get_videos_ids()
+
