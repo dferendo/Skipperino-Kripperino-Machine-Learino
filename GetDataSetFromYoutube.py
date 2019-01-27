@@ -7,11 +7,18 @@ class Video:
     video_id = ""
     video_published_at = ""
     game_starting_time = ""
+    is_game_starting_time_checked = False
+    video_file_location = ""
+    is_video_downloaded = False
 
-    def __init__(self, video_id, video_published_at, game_starting_time):
+    def __init__(self, video_id, video_published_at, game_starting_time, is_game_starting_time_checked,
+                 video_file_location, is_video_downloaded):
         self.video_id = video_id
         self.video_published_at = video_published_at
         self.game_starting_time = game_starting_time
+        self.is_game_starting_time_checked = is_game_starting_time_checked
+        self.video_file_location = video_file_location
+        self.is_video_downloaded = is_video_downloaded
 
 
 API_SERVICE_NAME = 'youtube'
@@ -31,7 +38,8 @@ def convert_json_to_object(videos_file):
 
     for video_in_json in videos_in_json:
         videos.append(Video(video_in_json['video_id'], video_in_json['video_published_at'],
-                            video_in_json['game_starting_time']))
+                            video_in_json['game_starting_time'], video_in_json['is_game_starting_time_checked'],
+                            video_in_json['video_file_location'], video_in_json['is_video_downloaded']))
 
     return videos
 
@@ -60,7 +68,8 @@ def get_videos_ids():
         for video in uploaded_videos['items']:
             content_details_video = video['contentDetails']
 
-            videos.append(Video(content_details_video['videoId'], content_details_video['videoPublishedAt'], ""))
+            videos.append(Video(content_details_video['videoId'], content_details_video['videoPublishedAt'], "",
+                                False, "", False))
 
         if 'nextPageToken' in uploaded_videos:
             next_page_token = uploaded_videos['nextPageToken']
@@ -82,14 +91,15 @@ def get_game_starting_time_from_comments():
 
         comment_thread_parameters = {
             'part': 'snippet',
-            'channelId': TRACK_COMMENTS_ACCOUNT_ID,
+            'allThreadsRelatedToChannelId': TRACK_COMMENTS_ACCOUNT_ID,
             'maxResults': 20
         }
 
         for video in videos:
-            comment_thread_parameters['videoId'] = video.video_id
-
             comments_in_video = client.commentThreads().list(**comment_thread_parameters).execute()
+
+            for comment_thread in comments_in_video['items']:
+                content_details_video = comment_thread['snippet']['textDisplay']
 
             break
 
@@ -99,5 +109,5 @@ def get_game_starting_time_from_comments():
 client = build(API_SERVICE_NAME, API_VERSION, developerKey=API_KEY)
 
 if __name__ == "__main__":
-    # get_videos_ids()
-    get_game_starting_time_from_comments()
+    get_videos_ids()
+    #get_game_starting_time_from_comments()
