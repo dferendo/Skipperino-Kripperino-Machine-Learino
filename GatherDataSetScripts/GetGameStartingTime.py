@@ -1,9 +1,10 @@
+import GatherDataSetScripts.Video as VideoClass
 
 
-def get_game_starting_time_from_comments():
+def get_game_starting_time_from_comments(client, data_set_location, comment_tracker):
 
-    with open(VIDEOS_DATA_LOCATION) as videos_file:
-        videos = convert_json_to_object(videos_file)
+    with open(data_set_location) as videos_file:
+        videos = VideoClass.convert_json_to_object(videos_file)
 
         comment_thread_parameters = {
             'part': 'snippet',
@@ -16,8 +17,11 @@ def get_game_starting_time_from_comments():
             comments_in_video = client.commentThreads().list(**comment_thread_parameters).execute()
 
             for comment_thread in comments_in_video['items']:
-                content_details_video = comment_thread['snippet']['textDisplay']
+                author = comment_thread['snippet']['topLevelComment']['snippet']['authorChannelId']['value']
+
+                if comment_tracker == author:
+                    comment = comment_thread['snippet']['topLevelComment']['snippet']['textDisplay']
+
+                    print(comment)
 
             break
-
-        print(len(videos))
