@@ -4,7 +4,7 @@ import json
 class Video:
     video_id = ""
     video_published_at = ""
-    game_starting_time = ""
+    game_starting_time = []
     is_game_starting_time_checked = False
     video_file_location = ""
     is_video_downloaded = False
