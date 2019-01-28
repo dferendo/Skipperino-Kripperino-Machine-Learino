@@ -61,6 +61,7 @@ def get_game_starting_time_from_comments(client, data_set_location, comment_trac
                         break
 
             except HttpError as error:
+                # Cannot make more API calls, stop script
                 if error.resp.get('content-type', '').startswith('application/json'):
                     reason = json.loads(error.content).get('error').get('errors')[0].get('reason')
                     if reason == 'quotaExceeded' or reason == 'dailyLimitExceeded':
