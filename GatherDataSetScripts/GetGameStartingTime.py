@@ -6,7 +6,7 @@ import json
 def get_game_starting_time_from_comments(client, data_set_location, comment_tracker):
     time_stamp_regex = "[0-9]+:[0-9]+"
 
-    with open(data_set_location, 'r+') as videos_file:
+    with open(data_set_location, 'r') as videos_file:
         videos = VideoClass.convert_json_to_object(videos_file)
         page_token = ""
         comment_thread_parameters = {
@@ -48,7 +48,8 @@ def get_game_starting_time_from_comments(client, data_set_location, comment_trac
                         break
                 else:
                     break
-            break
+
+    with open(data_set_location, 'w+') as videos_file:
         # Clear the json file and dump
         videos_file.truncate(0)
         json.dump([video.__dict__ for video in videos], videos_file)
