@@ -16,6 +16,9 @@ def get_game_starting_time_from_comments(client, data_set_location, comment_trac
         }
 
         for video in videos:
+            if video.is_game_starting_time_checked:
+                continue
+
             comment_thread_parameters['videoId'] = video.video_id
 
             while True:
@@ -28,7 +31,7 @@ def get_game_starting_time_from_comments(client, data_set_location, comment_trac
 
                     # Comment found, save it
                     if comment_tracker == author:
-                        comment = comment_thread['snippet']['topLevelComment']['snippet']['textDisplay']
+                        comment = comment_thread['snippet']['topLevelComment']['snippet']['textOriginal']
                         video.game_starting_time = re.findall(time_stamp_regex, comment)
                         video.is_game_starting_time_checked = True
                         break
@@ -45,7 +48,7 @@ def get_game_starting_time_from_comments(client, data_set_location, comment_trac
                         break
                 else:
                     break
-
+            break
         # Clear the json file and dump
         videos_file.truncate(0)
         json.dump([video.__dict__ for video in videos], videos_file)
