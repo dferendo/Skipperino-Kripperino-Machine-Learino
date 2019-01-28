@@ -27,7 +27,7 @@ def get_videos_ids(client, channel_id, data_set_location):
             content_details_video = video['contentDetails']
 
             videos.append(VideoClass.Video(content_details_video['videoId'], content_details_video['videoPublishedAt'],
-                                           "", False, "", False))
+                                           [], False, "", False))
 
         if 'nextPageToken' in uploaded_videos:
             next_page_token = uploaded_videos['nextPageToken']

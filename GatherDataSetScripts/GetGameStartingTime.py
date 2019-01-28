@@ -1,11 +1,12 @@
 import GatherDataSetScripts.Video as VideoClass
 import re
+import json
 
 
 def get_game_starting_time_from_comments(client, data_set_location, comment_tracker):
     time_stamp_regex = "[0-9]+:[0-9]+"
 
-    with open(data_set_location) as videos_file:
+    with open(data_set_location, 'r+') as videos_file:
         videos = VideoClass.convert_json_to_object(videos_file)
         page_token = ""
         comment_thread_parameters = {
@@ -15,9 +16,9 @@ def get_game_starting_time_from_comments(client, data_set_location, comment_trac
         }
 
         for video in videos:
-            # comment_thread_parameters['videoId'] = video.video_id
+            comment_thread_parameters['videoId'] = video.video_id
+
             while True:
-                comment_thread_parameters['videoId'] = 'pYn1x5RM9kg'
                 comment_thread_parameters['pageToken'] = page_token
 
                 comments_in_video = client.commentThreads().list(**comment_thread_parameters).execute()
@@ -45,4 +46,6 @@ def get_game_starting_time_from_comments(client, data_set_location, comment_trac
                 else:
                     break
 
-            break
+        # Clear the json file and dump
+        videos_file.truncate(0)
+        json.dump([video.__dict__ for video in videos], videos_file)

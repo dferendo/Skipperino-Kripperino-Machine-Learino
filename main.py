@@ -35,6 +35,6 @@ if __name__ == "__main__":
     api_key = config_file['google_api']['api_key']
 
     client = build(api_service_bane, api_version, developerKey=api_key)
-    # gather_video_ids_data_set(client)
-    gather_starting_time_from_youtube_comments(client)
+    gather_video_ids_data_set(client)
+    # gather_starting_time_from_youtube_comments(client)
     config_file_not_loaded.close()
