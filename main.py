@@ -44,6 +44,6 @@ if __name__ == "__main__":
 
     client = build(api_service_bane, api_version, developerKey=api_key)
     # gather_video_ids_data_set(client)
-    # gather_starting_time_from_youtube_comments(client)
-    download_video_and_get_images(client)
+    gather_starting_time_from_youtube_comments(client)
+    # download_video_and_get_images(client)
     config_file_not_loaded.close()
