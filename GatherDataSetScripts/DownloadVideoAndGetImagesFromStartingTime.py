@@ -2,16 +2,11 @@ import youtube_dl
 import GatherDataSetScripts.Video as VideoClass
 
 
-def handle_video_download_and_convertion(client, data_set_location):
+def handle_video_download_and_conversion_to_images(data_set_location, data_videos_set_location):
     youtube_videos_urls = "http://www.youtube.com/watch?v="
 
     ydl_opts = {
-        'format': 'bestaudio/best',
-        'postprocessors': [{
-            'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'mp3',
-            'preferredquality': '192',
-        }]
+        'outtmpl': data_videos_set_location + '/%(id)s'
     }
 
     with open(data_set_location, 'r') as videos_file:
