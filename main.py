@@ -26,7 +26,7 @@ def gather_starting_time_from_youtube_comments(api_client):
     GetGameStartingTime.get_game_starting_time_from_comments(api_client, data_set_location, comment_tracker)
 
 
-def download_video_and_get_images(api_client):
+def download_video_and_get_images():
     # Try to get starting time of the game from youtube comments
     data_set_location = os.path.abspath(config_file['youtube']['dataset_location'])
     data_videos_set_location = os.path.abspath(config_file['youtube']['dataset_videos_location'])
@@ -47,5 +47,5 @@ if __name__ == "__main__":
     client = build(api_service_bane, api_version, developerKey=api_key)
     # gather_video_ids_data_set(client)
     # gather_starting_time_from_youtube_comments(client)
-    download_video_and_get_images(client)
+    download_video_and_get_images()
     config_file_not_loaded.close()

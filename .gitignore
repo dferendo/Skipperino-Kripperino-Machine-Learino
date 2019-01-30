@@ -2,3 +2,4 @@
 /.vscode/
 *.log
 /GatherDataSetScripts/__pycache__/
+/DataSet/videos/

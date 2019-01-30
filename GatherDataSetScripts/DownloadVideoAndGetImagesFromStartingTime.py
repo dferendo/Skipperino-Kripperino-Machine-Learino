@@ -1,12 +1,13 @@
 import youtube_dl
 import GatherDataSetScripts.Video as VideoClass
+import logging
 
 
 def handle_video_download_and_conversion_to_images(data_set_location, data_videos_set_location):
     youtube_videos_urls = "http://www.youtube.com/watch?v="
 
     ydl_opts = {
-        'outtmpl': data_videos_set_location + '/%(id)s'
+        'outtmpl': data_videos_set_location + '\\%(id)s',
     }
 
     with open(data_set_location, 'r') as videos_file:
@@ -14,5 +15,19 @@ def handle_video_download_and_conversion_to_images(data_set_location, data_video
 
         for video in videos:
 
-            with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-                ydl.download([youtube_videos_urls + video.video_id])
+            if video.is_video_downloaded:
+                continue
+
+            try:
+
+                #with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+                    # Download video
+                #    ydl.download([youtube_videos_urls + video.video_id])
+
+                    # Get the video part we care about
+                input_file_location = data_videos_set_location + video.video_id + '.mkv'
+
+                # Convert to images
+                # ffmpeg -i file.mpg -r 1/1 $filename%03d.bmp
+            except Exception as error:
+                logging.error(error)
