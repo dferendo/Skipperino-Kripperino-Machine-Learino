@@ -1,6 +1,8 @@
 import youtube_dl
 import GatherDataSetScripts.Video as VideoClass
 import logging
+import subprocess
+import os
 
 
 def handle_video_download_and_conversion_to_images(data_set_location, data_videos_set_location):
@@ -25,8 +27,12 @@ def handle_video_download_and_conversion_to_images(data_set_location, data_video
                 #    ydl.download([youtube_videos_urls + video.video_id])
 
                     # Get the video part we care about
-                input_file_location = data_videos_set_location + video.video_id + '.mkv'
+                input_file_location = data_videos_set_location + '\\' + video.video_id + '.mkv'
+                # TODO: use subprocess
+                
+                os.system(f"ffmpeg -ss 30 -i {input_file_location} -c copy -t 10 output.wmv")
 
+                print(input_file_location)
                 # Convert to images
                 # ffmpeg -i file.mpg -r 1/1 $filename%03d.bmp
             except Exception as error:
