@@ -7,4 +7,5 @@ youtube:
   videos_to_track_channel_id: UCeBMccz-PDZf6OB4aV6a3eA
   comments_to_track_on_videos_channel_id: UCsuOjz5JNLAPN4qUMeTUguQ
   dataset_location: ./DataSet/videos.json
-  dataset_videos_location: ./DataSet/videos/
+  dataset_videos_location: ./DataSet/Videos/
+  dataset_images_location: ./DataSet/Images/

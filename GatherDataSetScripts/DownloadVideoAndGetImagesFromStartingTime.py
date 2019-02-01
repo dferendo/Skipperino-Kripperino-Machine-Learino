@@ -1,12 +1,13 @@
 import youtube_dl
 import GatherDataSetScripts.Video as VideoClass
 import logging
-import subprocess
 import os
 
 
-def handle_video_download_and_conversion_to_images(data_set_location, data_videos_set_location):
+def handle_video_download_and_conversion_to_images(data_set_location, data_videos_set_location,
+                                                   data_images_set_location):
     youtube_videos_urls = "http://www.youtube.com/watch?v="
+    seconds_after_starting_comments = 20
 
     ydl_opts = {
         'outtmpl': data_videos_set_location + '\\%(id)s',
@@ -22,18 +23,28 @@ def handle_video_download_and_conversion_to_images(data_set_location, data_video
 
             try:
 
-                #with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+                with youtube_dl.YoutubeDL(ydl_opts) as ydl:
                     # Download video
-                #    ydl.download([youtube_videos_urls + video.video_id])
+                    ydl.download([youtube_videos_urls + video.video_id])
 
-                    # Get the video part we care about
-                input_file_location = data_videos_set_location + '\\' + video.video_id + '.mkv'
-                # TODO: use subprocess
-                
-                os.system(f"ffmpeg -ss 30 -i {input_file_location} -c copy -t 10 output.wmv")
+                # Get the video part we care about
+                input_file_location = f"{data_videos_set_location}\\{video.video_id}.mkv"
 
-                print(input_file_location)
-                # Convert to images
-                # ffmpeg -i file.mpg -r 1/1 $filename%03d.bmp
+                for i in range(0, len(video.game_starting_time)):
+                    output_video_file_location = f"{data_videos_set_location}\\{video.video_id}_{i + 1}"
+                    output_images_file_location = f"{data_images_set_location}\\{video.video_id}_{i + 1}"
+
+                    # Get the range of the video we need
+                    os.system(f"ffmpeg -i \"{input_file_location}\" -ss {video.game_starting_time[i]} "
+                              f"-t {seconds_after_starting_comments} -c copy \"{output_video_file_location}.mkv\"")
+
+                    os.makedirs(output_images_file_location)
+
+                    # Convert to images
+                    os.system(f"ffmpeg -i \"{output_video_file_location}.mkv\" -r 1/2 "
+                              f"{output_images_file_location}\\%03d.bmp")
+
+                os.remove(input_file_location)
+
             except Exception as error:
                 logging.error(error)

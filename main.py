@@ -30,9 +30,11 @@ def download_video_and_get_images():
     # Try to get starting time of the game from youtube comments
     data_set_location = os.path.abspath(config_file['youtube']['dataset_location'])
     data_videos_set_location = os.path.abspath(config_file['youtube']['dataset_videos_location'])
+    data_images_set_location = os.path.abspath(config_file['youtube']['dataset_images_location'])
 
     DownloadVideoAndGetImagesFromStartingTime.handle_video_download_and_conversion_to_images(data_set_location,
-                                                                                             data_videos_set_location)
+                                                                                             data_videos_set_location,
+                                                                                             data_images_set_location)
 
 
 if __name__ == "__main__":
