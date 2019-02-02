@@ -2,6 +2,14 @@ import youtube_dl
 import GatherDataSetScripts.Video as VideoClass
 import logging
 import os
+import json
+
+
+def dump_file(data_set_location, videos):
+    with open(data_set_location, 'w+') as videos_file:
+        # Clear the json file and dump
+        videos_file.truncate(0)
+        json.dump([video.__dict__ for video in videos], videos_file)
 
 
 def handle_video_download_and_conversion_to_images(data_set_location, data_videos_set_location,
@@ -46,5 +54,8 @@ def handle_video_download_and_conversion_to_images(data_set_location, data_video
 
                 os.remove(input_file_location)
 
+                video.is_video_downloaded = True
             except Exception as error:
                 logging.error(error)
+
+    dump_file(data_set_location, videos)
