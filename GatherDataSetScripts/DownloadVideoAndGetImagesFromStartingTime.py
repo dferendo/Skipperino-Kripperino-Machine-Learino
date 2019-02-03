@@ -26,7 +26,7 @@ def handle_video_download_and_conversion_to_images(data_set_location, data_video
 
         for video in videos:
 
-            if video.is_video_downloaded:
+            if video.is_video_downloaded or video.game_starting_time == []:
                 continue
 
             try:
