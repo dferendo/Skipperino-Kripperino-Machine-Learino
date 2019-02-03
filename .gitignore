@@ -3,4 +3,4 @@
 *.log
 /GatherDataSetScripts/__pycache__/
 /DataSet/Videos/
-/DataSet/Images/
+/DataSet/Images/*.bmp
