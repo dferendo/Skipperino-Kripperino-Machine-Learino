@@ -16,9 +16,9 @@ def handle_video_download_and_conversion_to_images(data_set_location, data_video
                                                    data_images_set_location):
     youtube_videos_urls = "http://www.youtube.com/watch?v="
     seconds_after_starting_comments = 20
-
     ydl_opts = {
-        'outtmpl': data_videos_set_location + '\\%(id)s',
+        'format': 'mp4',
+        'outtmpl': data_videos_set_location + '\\%(id)s.%(ext)s'
     }
 
     with open(data_set_location, 'r') as videos_file:
@@ -30,27 +30,22 @@ def handle_video_download_and_conversion_to_images(data_set_location, data_video
                 continue
 
             try:
-
                 with youtube_dl.YoutubeDL(ydl_opts) as ydl:
                     # Download video
                     ydl.download([youtube_videos_urls + video.video_id])
 
-                # Get the video part we care about
-                input_file_location = f"{data_videos_set_location}\\{video.video_id}.mkv"
+                input_file_location = f"{data_videos_set_location}\\{video.video_id}.mp4"
 
                 for i in range(0, len(video.game_starting_time)):
                     output_video_file_location = f"{data_videos_set_location}\\{video.video_id}_{i + 1}"
-                    output_images_file_location = f"{data_images_set_location}\\{video.video_id}_{i + 1}"
 
                     # Get the range of the video we need
                     os.system(f"ffmpeg -i \"{input_file_location}\" -ss {video.game_starting_time[i]} "
-                              f"-t {seconds_after_starting_comments} -c copy \"{output_video_file_location}.mkv\"")
-
-                    os.makedirs(output_images_file_location)
+                              f"-t {seconds_after_starting_comments} -c copy \"{output_video_file_location}.mp4\"")
 
                     # Convert to images
-                    os.system(f"ffmpeg -i \"{output_video_file_location}.mkv\" -r 1/2 "
-                              f"{output_images_file_location}\\%03d.bmp")
+                    os.system(f"ffmpeg -i \"{output_video_file_location}.mp4\" -r 1/2 "
+                              f"{data_images_set_location}\\{video.video_id}_{i + 1}_%03d.bmp")
 
                 os.remove(input_file_location)
 
