@@ -5,12 +5,13 @@ Main aim is to detect when a heartstone game starts using Machine Learning from 
 
 
 ## Build
-Python 3.7.2, tested on Windows 10
+Python 3.6.x, tested on Windows 10
 
 ```bash
 pip install --upgrade google-api-python-client
 pip install --upgrade google-auth google-auth-oauthlib google-auth-httplib2
 pip install --upgrade pyyaml
+pip install --user --upgrade tensorflow
 ```
 
 Install [FFmpeg](https://www.ffmpeg.org/download.html#build-windows) and add to system path
