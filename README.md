@@ -12,6 +12,8 @@ pip install --upgrade google-api-python-client
 pip install --upgrade google-auth google-auth-oauthlib google-auth-httplib2
 pip install --upgrade pyyaml
 pip install --user --upgrade tensorflow
+pip install pillow
+pip install sklearn
 ```
 
 Install [FFmpeg](https://www.ffmpeg.org/download.html#build-windows) and add to system path
