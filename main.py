@@ -45,7 +45,8 @@ def train_cnn():
     os.system(f"python ./GameStartingBot/retrain.py "
               f"--image_dir=\"{training_data_set}\" "
               f"--how_many_training_steps={training_steps} "
-              f"--output_graph={graph_location}/retrained_graph.pb")
+              f"--output_graph={graph_location}/retrained_graph.pb "
+              f"--output_labels={graph_location}/labels.txt")
 
 
 if __name__ == "__main__":

@@ -13,4 +13,4 @@ training:
   train_data_set: ./DataSet/Images/Train/
   test_data_set: ./DataSet/Images/Test/
   training_steps: 800
-  trained_graph_location: ./DataSet/TrainGraph/
+  trained_graph_location: ./DataSet/TrainedGraph/
