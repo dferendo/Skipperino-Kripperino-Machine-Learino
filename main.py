@@ -37,6 +37,17 @@ def download_video_and_get_images():
                                                                                              data_images_set_location)
 
 
+def train_cnn():
+    training_data_set = os.path.abspath(config_file['training']['train_data_set'])
+    training_steps = config_file['training']['training_steps']
+    graph_location = os.path.abspath(config_file['training']['trained_graph_location'])
+
+    os.system(f"python ./GameStartingBot/retrain.py "
+              f"--image_dir=\"{training_data_set}\" "
+              f"--how_many_training_steps={training_steps} "
+              f"--output_graph={graph_location}.retrained_graph.pb")
+
+
 if __name__ == "__main__":
 
     logging.basicConfig(filename="logging.log", format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
@@ -49,5 +60,7 @@ if __name__ == "__main__":
     client = build(api_service_bane, api_version, developerKey=api_key)
     # gather_video_ids_data_set(client)
     # gather_starting_time_from_youtube_comments(client)
-    download_video_and_get_images()
+    # download_video_and_get_images()
+    train_cnn()
+
     config_file_not_loaded.close()

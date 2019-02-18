@@ -45,7 +45,7 @@ def handle_video_download_and_conversion_to_images(data_set_location, data_video
 
                     # Convert to images
                     os.system(f"ffmpeg -i \"{output_video_file_location}.mp4\" -r 1/2 "
-                              f"{data_images_set_location}\\{video.video_id}_{i + 1}_%03d.bmp")
+                              f"{data_images_set_location}\\{video.video_id}_{i + 1}_%03d.jpg")
 
                 os.remove(input_file_location)
 

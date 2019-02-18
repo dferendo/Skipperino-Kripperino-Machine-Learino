@@ -9,3 +9,8 @@ youtube:
   dataset_location: ./DataSet/videos.json
   dataset_videos_location: ./DataSet/Videos/
   dataset_images_location: ./DataSet/Images/
+training:
+  train_data_set: ./DataSet/Images/Train/
+  test_data_set: ./DataSet/Images/Test/
+  training_steps: 800
+  trained_graph_location: ./DataSet/TrainGraph/
