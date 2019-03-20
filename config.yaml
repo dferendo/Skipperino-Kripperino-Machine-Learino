@@ -15,3 +15,5 @@ training:
   training_steps: 800
   trained_graph_location: ./DataSet/TrainedGraph/retrained_graph.pb
   labels: ./DataSet/TrainedGraph/labels.txt
+detect_new_upload:
+  delay: 5

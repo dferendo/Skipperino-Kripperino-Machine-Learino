@@ -24,3 +24,4 @@ def load_labels(label_file):
 
 
 def predict_image(config):
+    return

@@ -4,6 +4,7 @@ import yaml
 import GatherDataSetScripts.GetAllVideosIds as GetAllVideosIds
 import GatherDataSetScripts.GetGameStartingTime as GetGameStartingTime
 import GatherDataSetScripts.DownloadVideoAndGetImagesFromStartingTime as DownloadVideoAndGetImagesFromStartingTime
+import DetectNewVideosAndTimestampThem.DetectNewVideoUpload as DetectNewVideoUpload
 import os
 
 config_file_not_loaded = open('config.yaml', 'r')
@@ -50,6 +51,13 @@ def train_cnn():
               f"--output_labels={labels_location} ")
 
 
+def detect_new_videos(api_client):
+    # Try to get starting time of the game from youtube comments
+    delay = config_file['detect_new_upload']['delay']
+
+    DetectNewVideoUpload.init_scheduler(api_client, delay)
+
+
 if __name__ == "__main__":
 
     logging.basicConfig(filename="logging.log", format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
@@ -64,5 +72,6 @@ if __name__ == "__main__":
     # gather_starting_time_from_youtube_comments(client)
     # download_video_and_get_images()
     # train_cnn()
+    detect_new_videos(client)
 
     config_file_not_loaded.close()
