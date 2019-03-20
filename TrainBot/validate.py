@@ -21,6 +21,9 @@ import argparse
 
 import numpy as np
 import tensorflow as tf
+import os
+
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 
 def load_graph(model_file):
@@ -77,12 +80,12 @@ if __name__ == "__main__":
   model_file = \
     "tensorflow/examples/label_image/data/inception_v3_2016_08_28_frozen.pb"
   label_file = "tensorflow/examples/label_image/data/imagenet_slim_labels.txt"
-  input_height = 299
-  input_width = 299
+  input_height = 128
+  input_width = 128
   input_mean = 0
-  input_std = 255
+  input_std = 128
   input_layer = "input"
-  output_layer = "InceptionV3/Predictions/Reshape_1"
+  output_layer = "final_result"
 
   parser = argparse.ArgumentParser()
   parser.add_argument("--image", help="image to be processed")

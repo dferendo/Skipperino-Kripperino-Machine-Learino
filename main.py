@@ -41,12 +41,13 @@ def train_cnn():
     training_data_set = os.path.abspath(config_file['training']['train_data_set'])
     training_steps = config_file['training']['training_steps']
     graph_location = os.path.abspath(config_file['training']['trained_graph_location'])
+    labels_location = os.path.abspath(config_file['training']['labels'])
 
-    os.system(f"python ./GameStartingBot/retrain.py "
+    os.system(f"python ./TrainBot/retrain.py "
               f"--image_dir=\"{training_data_set}\" "
               f"--how_many_training_steps={training_steps} "
-              f"--output_graph={graph_location}/retrained_graph.pb "
-              f"--output_labels={graph_location}/labels.txt")
+              f"--output_graph={graph_location} "
+              f"--output_labels={labels_location} ")
 
 
 if __name__ == "__main__":
@@ -62,6 +63,6 @@ if __name__ == "__main__":
     # gather_video_ids_data_set(client)
     # gather_starting_time_from_youtube_comments(client)
     # download_video_and_get_images()
-    train_cnn()
+    # train_cnn()
 
     config_file_not_loaded.close()

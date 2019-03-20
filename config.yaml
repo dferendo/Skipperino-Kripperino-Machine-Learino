@@ -13,4 +13,5 @@ training:
   train_data_set: ./DataSet/Images/Train/
   test_data_set: ./DataSet/Images/Test/
   training_steps: 800
-  trained_graph_location: ./DataSet/TrainedGraph/
+  trained_graph_location: ./DataSet/TrainedGraph/retrained_graph.pb
+  labels: ./DataSet/TrainedGraph/labels.txt
