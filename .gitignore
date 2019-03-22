@@ -4,3 +4,5 @@
 /GatherDataSetScripts/__pycache__/
 /DataSet/Videos/
 /DataSet/Images/*.bmp
+*.pyc
+/DetectNewVideosAndTimestampThem/__pycache__/
