@@ -1,10 +1,17 @@
 import youtube_dl
+import tempfile
+import os
 
 
 def make_timestamp_on_new_video(video_id, new_videos_location):
     video_location = get_and_download_video_local_location(video_id, new_videos_location)
 
-    return
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        # Get images from video
+        os.system(f"ffmpeg -i \"{video_location}\" -r 1/2 \"{tmp_dir}\\%03d.jpg\"")
+
+        for filename in os.listdir(tmp_dir):
+            print(filename)
 
 
 def get_and_download_video_local_location(video_id, new_videos_location):
