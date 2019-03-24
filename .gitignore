@@ -6,3 +6,4 @@
 /DataSet/Images/*.bmp
 *.pyc
 /DetectNewVideosAndTimestampThem/__pycache__/
+/VideosWithTimestamps/*.mp4
