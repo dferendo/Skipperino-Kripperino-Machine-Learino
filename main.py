@@ -54,9 +54,10 @@ def train_cnn():
 def detect_new_videos(api_client):
     # Try to get starting time of the game from youtube comments
     delay = config_file['detect_new_upload']['delay']
+    new_videos_location = os.path.abspath(config_file['detect_new_upload']['videos_download'])
     channel_id = config_file['youtube']['videos_to_track_channel_id']
 
-    DetectNewVideoUpload.init_scheduler(api_client, delay, channel_id)
+    DetectNewVideoUpload.init_scheduler(api_client, delay, channel_id, new_videos_location)
 
 
 if __name__ == "__main__":

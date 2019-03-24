@@ -7,29 +7,35 @@ scheduler = None
 delay = 0
 
 
-def init_scheduler(api_client, scheduler_delay, channel_id):
+def init_scheduler(api_client, scheduler_delay, channel_id, new_videos_location):
     global scheduler, delay
     scheduler = sched.scheduler(time.time, time.sleep)
     delay = scheduler_delay
     playlist_id = get_playlist_of_channel(api_client, channel_id)
 
-    scheduler.enter(delay, 1, check_if_there_is_new_video_upload, (api_client, None, playlist_id))
+    scheduler.enter(delay, 1, check_if_there_is_new_video_upload, (api_client, None, playlist_id, new_videos_location))
     scheduler.run()
 
 
-def check_if_there_is_new_video_upload(api_client, last_video_id, playlist_id):
+def check_if_there_is_new_video_upload(api_client, last_video_id, playlist_id, new_videos_location):
     logging.info("Checking if new video was uploaded recently.")
 
-    current_last_video_id = get_latest_video_from_channel(api_client, playlist_id)
-
     # Get the latest video on first call
+    current_last_video_id = get_latest_video_from_channel(api_client, playlist_id)
+    # TODO: Remove
+    make_timestamp.make_timestamp_on_new_video(current_last_video_id, new_videos_location)
+
+    '''
     if last_video_id is None:
         last_video_id = current_last_video_id
     elif last_video_id != current_last_video_id:
         # New video detected
-        make_timestamp.make_timestamp_on_new_video()
+        make_timestamp.make_timestamp_on_new_video(current_last_video_id, new_videos_location)
+        last_video_id = current_last_video_id
+    '''
 
-    scheduler.enter(delay, 1, check_if_there_is_new_video_upload, (api_client, last_video_id, playlist_id))
+    scheduler.enter(delay, 1, check_if_there_is_new_video_upload, (api_client, last_video_id, playlist_id,
+                                                                   new_videos_location))
 
 
 def get_latest_video_from_channel(api_client, playlist_id):

@@ -17,3 +17,4 @@ training:
   labels: ./DataSet/TrainedGraph/labels.txt
 detect_new_upload:
   delay: 5
+  videos_download: ./VideosWithTimestamps/
