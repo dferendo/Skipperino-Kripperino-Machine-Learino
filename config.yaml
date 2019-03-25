@@ -11,7 +11,7 @@ youtube:
   dataset_images_location: ./DataSet/Images/
 training:
   train_data_set: ./DataSet/Images/Train/
-  test_data_set: ./DataSet/Images/Test/
+  test_data_set: ./DataSet/Images/Test/CardSelect/bS9w8dwD52o_2_007.jpg
   training_steps: 4000
   trained_graph_location: ./DataSet/TrainedGraph/retrained_graph.pb
   labels: ./DataSet/TrainedGraph/labels.txt
