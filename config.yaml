@@ -12,7 +12,7 @@ youtube:
 training:
   train_data_set: ./DataSet/Images/Train/
   test_data_set: ./DataSet/Images/Test/
-  training_steps: 800
+  training_steps: 4000
   trained_graph_location: ./DataSet/TrainedGraph/retrained_graph.pb
   labels: ./DataSet/TrainedGraph/labels.txt
 detect_new_upload:

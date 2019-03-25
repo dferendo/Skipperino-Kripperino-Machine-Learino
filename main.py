@@ -44,6 +44,18 @@ def train_cnn():
     graph_location = os.path.abspath(config_file['training']['trained_graph_location'])
     labels_location = os.path.abspath(config_file['training']['labels'])
 
+    os.system(f"python ./TrainBot/Retrain.py "
+              f"--image_dir=\"{training_data_set}\" "
+              f"--how_many_training_steps={training_steps} "
+              f"--output_graph={graph_location} "
+              f"--output_labels={labels_location} ")
+
+
+def validate_cnn():
+    training_data_set = os.path.abspath(config_file['training']['test_data_set'])
+    graph_location = os.path.abspath(config_file['training']['trained_graph_location'])
+    labels_location = os.path.abspath(config_file['training']['labels'])
+
     os.system(f"python ./TrainBot/retrain.py "
               f"--image_dir=\"{training_data_set}\" "
               f"--how_many_training_steps={training_steps} "
@@ -73,7 +85,7 @@ if __name__ == "__main__":
     # gather_video_ids_data_set(client)
     # gather_starting_time_from_youtube_comments(client)
     # download_video_and_get_images()
-    # train_cnn()
-    detect_new_videos(client)
+    train_cnn()
+    # detect_new_videos(client)
 
     config_file_not_loaded.close()
