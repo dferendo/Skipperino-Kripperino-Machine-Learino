@@ -3,6 +3,7 @@ import GatherDataSetScripts.Video as VideoClass
 import logging
 import os
 import json
+import tempfile
 
 
 def dump_file(data_set_location, videos):
@@ -13,9 +14,13 @@ def dump_file(data_set_location, videos):
 
 
 def handle_video_download_and_conversion_to_images(data_set_location, data_videos_set_location,
-                                                   data_images_set_location):
+                                                   data_images_set_location_intro,
+                                                   data_images_set_location_card_select,
+                                                   data_images_set_location_draft,
+                                                   data_images_set_location_game_start,
+                                                   data_images_set_location_other):
     youtube_videos_urls = "http://www.youtube.com/watch?v="
-    seconds_after_starting_comments = 20
+    frames_per_second = 0.5
     ydl_opts = {
         'format': 'mp4',
         'outtmpl': data_videos_set_location + '\\%(id)s.%(ext)s'
@@ -36,21 +41,38 @@ def handle_video_download_and_conversion_to_images(data_set_location, data_video
 
                 input_file_location = f"{data_videos_set_location}\\{video.video_id}.mp4"
 
-                for i in range(0, len(video.game_starting_time)):
-                    output_video_file_location = f"{data_videos_set_location}\\{video.video_id}_{i + 1}"
-
-                    # Get the range of the video we need
-                    os.system(f"ffmpeg -i \"{input_file_location}\" -ss {video.game_starting_time[i]} "
-                              f"-t {seconds_after_starting_comments} -c copy \"{output_video_file_location}.mp4\"")
-
-                    # Convert to images
-                    os.system(f"ffmpeg -i \"{output_video_file_location}.mp4\" -r 1/2 "
-                              f"{data_images_set_location}\\{video.video_id}_{i + 1}_%03d.jpg")
-
-                os.remove(input_file_location)
+                with tempfile.TemporaryDirectory() as tmp_dir:
+                    convert_video_to_images(input_file_location, tmp_dir, frames_per_second)
+                    place_images_in_the_right_folders(tmp_dir, frames_per_second, video.game_starting_time,
+                                                      data_images_set_location_intro,
+                                                      data_images_set_location_card_select,
+                                                      data_images_set_location_draft,
+                                                      data_images_set_location_game_start,
+                                                      data_images_set_location_other)
 
                 video.is_video_downloaded = True
             except Exception as error:
                 logging.error(error)
 
-    dump_file(data_set_location, videos)
+    # dump_file(data_set_location, videos)
+
+
+def convert_video_to_images(input_file_location, output_folder, frames_per_second):
+    os.system(f"ffmpeg -i \"{input_file_location}\" -vf fps={frames_per_second} \"{output_folder}\\%05d.jpg\"")
+
+
+def place_images_in_the_right_folders(images_locations, frames_per_second, game_starting_time,
+                                      data_images_set_location_intro,
+                                      data_images_set_location_card_select,
+                                      data_images_set_location_draft,
+                                      data_images_set_location_game_start,
+                                      data_images_set_location_other):
+    # This is an approx
+    seconds_after_starting_comments = 20
+
+    for filename in os.listdir(images_locations):
+        timestamp_in_seconds = (int(filename.split('.')[0]) - 1) * (1 / frames_per_second)
+
+        full_file_path = f"{images_locations}\\{filename}"
+
+        print(timestamp_in_seconds)

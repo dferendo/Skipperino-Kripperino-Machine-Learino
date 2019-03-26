@@ -8,7 +8,11 @@ youtube:
   comments_to_track_on_videos_channel_id: UCsuOjz5JNLAPN4qUMeTUguQ
   dataset_location: ./DataSet/videos.json
   dataset_videos_location: ./DataSet/Videos/
-  dataset_images_location: ./DataSet/Images/
+  dataset_images_location_intro: ./DataSet/Images/Train/Intro/
+  dataset_images_location_card_select: ./DataSet/Images/Train/CardSelect/
+  dataset_images_location_draft: ./DataSet/Images/Train/Draft/
+  dataset_images_location_game_start: ./DataSet/Train/Images/GameStart/
+  dataset_images_location_other: ./DataSet/Train/Images/Other/
 training:
   train_data_set: ./DataSet/Images/Train/
   test_data_set: ./DataSet/Images/Test/CardSelect/bS9w8dwD52o_2_007.jpg

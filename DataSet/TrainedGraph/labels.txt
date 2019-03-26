@@ -1,3 +1,0 @@
-cardselect
-draft
-gamestart

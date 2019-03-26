@@ -31,11 +31,20 @@ def download_video_and_get_images():
     # Try to get starting time of the game from youtube comments
     data_set_location = os.path.abspath(config_file['youtube']['dataset_location'])
     data_videos_set_location = os.path.abspath(config_file['youtube']['dataset_videos_location'])
-    data_images_set_location = os.path.abspath(config_file['youtube']['dataset_images_location'])
+    data_images_set_location_intro = os.path.abspath(config_file['youtube']['data_images_set_location_intro'])
+    data_images_set_location_card_select = os.path.abspath(config_file['youtube']['dataset_images_location_card_select'])
+    data_images_set_location_draft = os.path.abspath(config_file['youtube']['dataset_images_location_draft'])
+    data_images_set_location_game_start = os.path.abspath(config_file['youtube']['dataset_images_location_game_start'])
+    data_images_set_location_other = os.path.abspath(config_file['youtube']['dataset_images_location_other'])
 
-    DownloadVideoAndGetImagesFromStartingTime.handle_video_download_and_conversion_to_images(data_set_location,
-                                                                                             data_videos_set_location,
-                                                                                             data_images_set_location)
+    DownloadVideoAndGetImagesFromStartingTime\
+        .handle_video_download_and_conversion_to_images(data_set_location,
+                                                        data_videos_set_location,
+                                                        data_images_set_location_intro,
+                                                        data_images_set_location_card_select,
+                                                        data_images_set_location_draft,
+                                                        data_images_set_location_game_start,
+                                                        data_images_set_location_other)
 
 
 def train_cnn():
@@ -85,9 +94,9 @@ if __name__ == "__main__":
     client = build(api_service_bane, api_version, developerKey=api_key)
     # gather_video_ids_data_set(client)
     # gather_starting_time_from_youtube_comments(client)
-    # download_video_and_get_images()
+    download_video_and_get_images()
     # train_cnn()
-    validate_cnn()
+    # validate_cnn()
     # detect_new_videos(client)
 
     config_file_not_loaded.close()
