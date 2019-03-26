@@ -4,6 +4,7 @@ import logging
 import os
 import json
 import tempfile
+import shutil
 
 
 def dump_file(data_set_location, videos):
@@ -69,10 +70,31 @@ def place_images_in_the_right_folders(images_locations, frames_per_second, game_
                                       data_images_set_location_other):
     # This is an approx
     seconds_after_starting_comments = 20
+    game_starting_time_in_seconds = [convert_from_time_to_second for time in game_starting_time]
 
     for filename in os.listdir(images_locations):
         timestamp_in_seconds = (int(filename.split('.')[0]) - 1) * (1 / frames_per_second)
-
         full_file_path = f"{images_locations}\\{filename}"
 
-        print(timestamp_in_seconds)
+        # Indicates this does not contains game play
+        if len(game_starting_time_in_seconds) == 0:
+            move_file(full_file_path, data_images_set_location_other)
+        elif len(game_starting_time_in_seconds) == 1:
+            # This indicates normal game with card select
+            return
+        elif len(game_starting_time_in_seconds) == 2:
+            # This indicates arena
+            return
+        else:
+            # This is an error
+            return
+
+
+def convert_from_time_to_second(game_starting_time):
+    split_string = game_starting_time.split(':')
+
+    return int(split_string[0]) * 60 + int(split_string[1])
+
+
+def move_file(current_location, new_location):
+    shutil.move(current_location, new_location)
