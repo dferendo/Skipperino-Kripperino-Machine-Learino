@@ -81,8 +81,29 @@ def place_images_in_the_right_folders(images_locations, frames_per_second, game_
             move_file(full_file_path, data_images_set_location_other)
         elif len(game_starting_time_in_seconds) == 1:
             # This indicates normal game with card select
-            return
+            starting_time = game_starting_time_in_seconds[0]
+
+            if (timestamp_in_seconds < starting_time):
+                move_file(full_file_path, data_images_set_location_intro)
+            elif (timestamp_in_seconds >= starting_time and (starting_time + seconds_after_starting_comments) < timestamp_in_seconds)
+                move_file(full_file_path, data_images_set_location_card_select)
+            else:
+                move_file(full_file_path, data_images_set_location_game_start)
         elif len(game_starting_time_in_seconds) == 2:
+            # This indicates area game with Draft pick
+            draft_starting_time = game_starting_time_in_seconds[0]
+            card_select_starting_time = game_starting_time_in_seconds[1]
+
+            if (timestamp_in_seconds < draft_starting_time):
+                move_file(full_file_path, data_images_set_location_intro)
+            elif (timestamp_in_seconds >= draft_starting_time and timestamp_in_seconds < card_select_starting_time):
+                move_file(full_file_path, data_images_set_location_draft)
+            elif (timestamp_in_seconds >= card_select_starting_time and (card_select_starting_time + seconds_after_starting_comments) < timestamp_in_seconds)
+                move_file(full_file_path, data_images_set_location_card_select)
+            else:
+                move_file(full_file_path, data_images_set_location_game_start)
+
+
             # This indicates arena
             return
         else:
