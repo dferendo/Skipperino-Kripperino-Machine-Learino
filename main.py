@@ -2,6 +2,7 @@ from googleapiclient.discovery import build
 import logging
 import yaml
 import os
+import argparse
 import GatherDataSetScripts.GetAllVideosIds as GetAllVideosIds
 import GatherDataSetScripts.GetGameStartingTime as GetGameStartingTime
 import GatherDataSetScripts.DownloadVideoAndGetImagesFromStartingTime as DownloadVideoAndGetImagesFromStartingTime
@@ -10,6 +11,7 @@ from GatherDataSetScripts.__init__ import GatherDataConfigs
 
 config_file_not_loaded = open('config.yaml', 'r')
 config_file = yaml.safe_load(config_file_not_loaded)
+client = None
 
 
 def gather_video_ids_data_set(api_client):
@@ -69,21 +71,31 @@ def detect_new_videos(api_client):
     DetectNewVideoUpload.init_scheduler(api_client, delay, channel_id, new_videos_location)
 
 
-if __name__ == "__main__":
-
-    logging.basicConfig(filename="logging.log", format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-                        level=logging.DEBUG)
-
+def build_google_client():
     api_service_bane = config_file['google_api']['youtube_api_service_name']
     api_version = config_file['google_api']['youtube_version']
     api_key = config_file['google_api']['api_key']
 
-    client = build(api_service_bane, api_version, developerKey=api_key)
-    # gather_video_ids_data_set(client)
-    # gather_starting_time_from_youtube_comments(client)
-    download_video_and_get_images()
-    # train_cnn()
-    # validate_cnn()
-    # detect_new_videos(client)
+    return build(api_service_bane, api_version, developerKey=api_key)
+
+
+if __name__ == "__main__":
+    logging.basicConfig(filename="logging.log", format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+                        level=logging.DEBUG)
+    parser = argparse.ArgumentParser()
+
+    functions = {'gather-video-ids': gather_video_ids_data_set,
+                 'gather_starting_time': gather_starting_time_from_youtube_comments,
+                 'download-videos-and-convert-to-images': download_video_and_get_images,
+                 'train-cnn': train_cnn,
+                 'validate-cnn': validate_cnn,
+                 'run': detect_new_videos}
+
+    parser.add_argument('command', choices=functions.keys())
+
+    args = parser.parse_args()
+
+    action = functions[args.command]
+    action()
 
     config_file_not_loaded.close()
