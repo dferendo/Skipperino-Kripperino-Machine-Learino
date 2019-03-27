@@ -20,8 +20,9 @@ def gather_video_ids_data_set():
     # Get all videos Ids
     channel_id = config_file['youtube']['videos_to_track_channel_id']
     data_set_location = os.path.abspath(config_file['youtube']['dataset_location'])
+    published_after = config_file['youtube']['published_after']
 
-    GetAllVideosIds.get_videos_ids(api_client, channel_id, data_set_location)
+    GetAllVideosIds.get_videos_ids(api_client, channel_id, data_set_location, published_after)
 
 
 def gather_starting_time_from_youtube_comments():
