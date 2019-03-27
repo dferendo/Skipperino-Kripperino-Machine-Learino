@@ -92,7 +92,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     functions = {'gather-video-ids': gather_video_ids_data_set,
-                 'gather_starting_time': gather_starting_time_from_youtube_comments,
+                 'gather-starting-time': gather_starting_time_from_youtube_comments,
                  'download-videos-and-convert-to-images': download_video_and_get_images,
                  'train-cnn': train_cnn,
                  'validate-cnn': validate_cnn,
