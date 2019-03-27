@@ -2,6 +2,7 @@ import GatherDataSetScripts.Video as VideoClass
 import re
 import json
 from googleapiclient.errors import HttpError
+import logging
 
 
 def dump_file(data_set_location, videos):
@@ -36,14 +37,17 @@ def get_game_starting_time_from_comments(client, data_set_location, comment_trac
                     comments_in_video = client.commentThreads().list(**comment_thread_parameters).execute()
 
                     for comment_thread in comments_in_video['items']:
-                        author = comment_thread['snippet']['topLevelComment']['snippet']['authorChannelId']['value']
+                        try:
+                            author = comment_thread['snippet']['topLevelComment']['snippet']['authorChannelId']['value']
 
-                        # Comment found, save it
-                        if comment_tracker == author:
-                            comment = comment_thread['snippet']['topLevelComment']['snippet']['textOriginal']
-                            video.game_starting_time = re.findall(time_stamp_regex, comment)
-                            video.is_game_starting_time_checked = True
-                            break
+                            # Comment found, save it
+                            if comment_tracker == author:
+                                comment = comment_thread['snippet']['topLevelComment']['snippet']['textOriginal']
+                                video.game_starting_time = re.findall(time_stamp_regex, comment)
+                                video.is_game_starting_time_checked = True
+                                break
+                        except Exception:
+                            logging.exception("Missing Json fields")
 
                     # If we found the comment, stop looking (Assumption the user posts once, he usually does post once)
                     if video.is_game_starting_time_checked:
