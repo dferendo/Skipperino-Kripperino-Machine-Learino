@@ -7,6 +7,15 @@ import tempfile
 import shutil
 
 
+# This is an approx
+seconds_after_starting_comments = 20
+intro_location = ""
+card_select_location = ""
+draft_location = ""
+game_start_location = ""
+other_location = ""
+
+
 def dump_file(data_set_location, videos):
     with open(data_set_location, 'w+') as videos_file:
         # Clear the json file and dump
@@ -14,20 +23,15 @@ def dump_file(data_set_location, videos):
         json.dump([video.__dict__ for video in videos], videos_file)
 
 
-def handle_video_download_and_conversion_to_images(data_set_location, data_videos_set_location,
-                                                   data_images_set_location_intro,
-                                                   data_images_set_location_card_select,
-                                                   data_images_set_location_draft,
-                                                   data_images_set_location_game_start,
-                                                   data_images_set_location_other):
+def handle_video_download_and_conversion_to_images(configs):
     youtube_videos_urls = "http://www.youtube.com/watch?v="
     frames_per_second = 0.5
     ydl_opts = {
         'format': 'mp4',
-        'outtmpl': data_videos_set_location + '\\%(id)s.%(ext)s'
+        'outtmpl': configs.videos_set_location + '\\%(id)s.%(ext)s'
     }
 
-    with open(data_set_location, 'r') as videos_file:
+    with open(configs.data_set_location, 'r') as videos_file:
         videos = VideoClass.convert_json_to_object(videos_file)
 
         for video in videos:
@@ -40,19 +44,12 @@ def handle_video_download_and_conversion_to_images(data_set_location, data_video
                     # Download video
                     ydl.download([youtube_videos_urls + video.video_id])
 
-                input_file_location = f"{data_videos_set_location}\\{video.video_id}.mp4"
+                input_file_location = f"{configs.videos_set_location}\\{video.video_id}.mp4"
 
                 with tempfile.TemporaryDirectory() as tmp_dir:
                     convert_video_to_images(input_file_location, tmp_dir, frames_per_second)
-                    place_images_in_the_right_folders(video.video_id,
-                                                      tmp_dir,
-                                                      frames_per_second,
-                                                      video.game_starting_time,
-                                                      data_images_set_location_intro,
-                                                      data_images_set_location_card_select,
-                                                      data_images_set_location_draft,
-                                                      data_images_set_location_game_start,
-                                                      data_images_set_location_other)
+                    place_images_in_the_right_folders(configs, video.video_id, tmp_dir, frames_per_second,
+                                                      video.game_starting_time)
 
                 video.is_video_downloaded = True
             except Exception as error:
@@ -65,34 +62,20 @@ def convert_video_to_images(input_file_location, output_folder, frames_per_secon
     os.system(f"ffmpeg -i \"{input_file_location}\" -vf fps={frames_per_second} \"{output_folder}\\%05d.jpg\"")
 
 
-def place_images_in_the_right_folders(video_id, images_locations, frames_per_second,
-                                      game_starting_time,
-                                      data_images_set_location_intro,
-                                      data_images_set_location_card_select,
-                                      data_images_set_location_draft,
-                                      data_images_set_location_game_start,
-                                      data_images_set_location_other):
-    # This is an approx
-    seconds_after_starting_comments = 20
+def place_images_in_the_right_folders(configs, video_id, images_locations, frames_per_second, game_starting_time):
     game_starting_time_in_seconds = [convert_from_time_to_second(time) for time in game_starting_time]
 
     for filename in os.listdir(images_locations):
         timestamp_in_seconds = (int(filename.split('.')[0]) - 1) * (1 / frames_per_second)
         full_file_path = f"{images_locations}\\{filename}"
+        current_folder_selected = configs.game_play_location
 
         # Indicates this does not contains game play
         if len(game_starting_time_in_seconds) == 0:
-            move_file(full_file_path, data_images_set_location_other, video_id, filename)
+            current_folder_selected = configs.other_location
         elif len(game_starting_time_in_seconds) == 1:
-            # This indicates normal game with card select
-            starting_time = game_starting_time_in_seconds[0]
-
-            if timestamp_in_seconds < starting_time:
-                move_file(full_file_path, data_images_set_location_intro, video_id, filename)
-            elif timestamp_in_seconds >= starting_time and (starting_time + seconds_after_starting_comments) < timestamp_in_seconds:
-                move_file(full_file_path, data_images_set_location_card_select, video_id, filename)
-            else:
-                move_file(full_file_path, data_images_set_location_game_start, video_id, filename)
+            # This indicates normal game (Intro -> Card Select -> Game Play)
+            handle_normal_game(configs, timestamp_in_seconds, game_starting_time_in_seconds[0])
         elif len(game_starting_time_in_seconds) == 2:
             # This indicates area game with Draft pick
             draft_starting_time = game_starting_time_in_seconds[0]
@@ -107,10 +90,19 @@ def place_images_in_the_right_folders(video_id, images_locations, frames_per_sec
                 move_file(full_file_path, data_images_set_location_card_select, video_id, filename)
             else:
                 move_file(full_file_path, data_images_set_location_game_start, video_id, filename)
-            return
-        else:
-            # This is an error
-            return
+
+        move_file(full_file_path, current_folder_selected, video_id, filename)
+
+
+def handle_normal_game(configs, current_time, card_select_start_time):
+
+    if current_time < card_select_start_time:
+        return data_images_set_location_intro
+    elif current_time >= card_select_start_time and \
+            (card_select_start_time + seconds_after_starting_comments) < current_time:
+        return data_images_set_location_card_select
+
+    return data_images_set_location_game_start
 
 
 def convert_from_time_to_second(game_starting_time):

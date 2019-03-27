@@ -1,11 +1,12 @@
 from googleapiclient.discovery import build
 import logging
 import yaml
+import os
 import GatherDataSetScripts.GetAllVideosIds as GetAllVideosIds
 import GatherDataSetScripts.GetGameStartingTime as GetGameStartingTime
 import GatherDataSetScripts.DownloadVideoAndGetImagesFromStartingTime as DownloadVideoAndGetImagesFromStartingTime
 import DetectNewVideosAndTimestampThem.DetectNewVideoUpload as DetectNewVideoUpload
-import os
+from GatherDataSetScripts.__init__ import GatherDataConfigs
 
 config_file_not_loaded = open('config.yaml', 'r')
 config_file = yaml.safe_load(config_file_not_loaded)
@@ -28,23 +29,9 @@ def gather_starting_time_from_youtube_comments(api_client):
 
 
 def download_video_and_get_images():
-    # Try to get starting time of the game from youtube comments
-    data_set_location = os.path.abspath(config_file['youtube']['dataset_location'])
-    data_videos_set_location = os.path.abspath(config_file['youtube']['dataset_videos_location'])
-    data_images_set_location_intro = os.path.abspath(config_file['youtube']['dataset_images_location_intro'])
-    data_images_set_location_card_select = os.path.abspath(config_file['youtube']['dataset_images_location_card_select'])
-    data_images_set_location_draft = os.path.abspath(config_file['youtube']['dataset_images_location_draft'])
-    data_images_set_location_game_start = os.path.abspath(config_file['youtube']['dataset_images_location_game_start'])
-    data_images_set_location_other = os.path.abspath(config_file['youtube']['dataset_images_location_other'])
+    configs = GatherDataConfigs(config_file)
 
-    DownloadVideoAndGetImagesFromStartingTime\
-        .handle_video_download_and_conversion_to_images(data_set_location,
-                                                        data_videos_set_location,
-                                                        data_images_set_location_intro,
-                                                        data_images_set_location_card_select,
-                                                        data_images_set_location_draft,
-                                                        data_images_set_location_game_start,
-                                                        data_images_set_location_other)
+    DownloadVideoAndGetImagesFromStartingTime.handle_video_download_and_conversion_to_images(configs)
 
 
 def train_cnn():
