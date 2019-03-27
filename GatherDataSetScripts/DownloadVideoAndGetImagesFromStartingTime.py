@@ -55,7 +55,7 @@ def handle_video_download_and_conversion_to_images(configs):
             except Exception as error:
                 logging.error(error)
 
-    # dump_file(data_set_location, videos)
+    dump_file(configs.data_set_location, videos)
 
 
 def convert_video_to_images(input_file_location, output_folder, frames_per_second):
