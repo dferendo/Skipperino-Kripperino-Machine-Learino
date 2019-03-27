@@ -1,7 +1,7 @@
 google_api:
   youtube_api_service_name: youtube
   youtube_version: v3
-  api_key: AIzaSyDBlDO4a5P8oIUENzgS5VPC5lsPrV5Aam0
+  api_key: AIzaSyCIzlcXK66R0lHJkYSrG_fFkJPKzDWZEiQ
 youtube:
   videos_to_track_channel_id: UCeBMccz-PDZf6OB4aV6a3eA
   comments_to_track_on_videos_channel_id: UCsuOjz5JNLAPN4qUMeTUguQ

@@ -4,7 +4,7 @@ from dateutil import parser
 
 
 def get_videos_ids(client, channel_id, data_set_location, published_after_string):
-    publish_after = parser.parse(published_after_string)
+    publish_after = parser.parse(published_after_string).date()
     channel_parameters = {
         'part': 'contentDetails',
         'id': channel_id
@@ -28,7 +28,7 @@ def get_videos_ids(client, channel_id, data_set_location, published_after_string
 
         for video in uploaded_videos['items']:
             content_details_video = video['contentDetails']
-            published_at = parser.parse(content_details_video['videoPublishedAt'])
+            published_at = parser.parse(content_details_video['videoPublishedAt']).date()
 
             if published_at < publish_after:
                 time_limit_reached = True
