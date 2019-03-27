@@ -14,7 +14,9 @@ config_file = yaml.safe_load(config_file_not_loaded)
 client = None
 
 
-def gather_video_ids_data_set(api_client):
+def gather_video_ids_data_set():
+    api_client = build_google_client()
+
     # Get all videos Ids
     channel_id = config_file['youtube']['videos_to_track_channel_id']
     data_set_location = os.path.abspath(config_file['youtube']['dataset_location'])
@@ -22,7 +24,9 @@ def gather_video_ids_data_set(api_client):
     GetAllVideosIds.get_videos_ids(api_client, channel_id, data_set_location)
 
 
-def gather_starting_time_from_youtube_comments(api_client):
+def gather_starting_time_from_youtube_comments():
+    api_client = build_google_client()
+
     # Try to get starting time of the game from youtube comments
     data_set_location = os.path.abspath(config_file['youtube']['dataset_location'])
     comment_tracker = config_file['youtube']['comments_to_track_on_videos_channel_id']
@@ -62,7 +66,9 @@ def validate_cnn():
               f"--image=\"{test_location}\" ")
 
 
-def detect_new_videos(api_client):
+def detect_new_videos():
+    api_client = build_google_client()
+
     # Try to get starting time of the game from youtube comments
     delay = config_file['detect_new_upload']['delay']
     new_videos_location = os.path.abspath(config_file['detect_new_upload']['videos_download'])
