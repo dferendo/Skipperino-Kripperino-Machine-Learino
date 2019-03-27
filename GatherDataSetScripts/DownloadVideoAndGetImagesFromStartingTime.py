@@ -70,7 +70,7 @@ def place_images_in_the_right_folders(images_locations, frames_per_second, game_
                                       data_images_set_location_other):
     # This is an approx
     seconds_after_starting_comments = 20
-    game_starting_time_in_seconds = [convert_from_time_to_second for time in game_starting_time]
+    game_starting_time_in_seconds = [convert_from_time_to_second(time) for time in game_starting_time]
 
     for filename in os.listdir(images_locations):
         timestamp_in_seconds = (int(filename.split('.')[0]) - 1) * (1 / frames_per_second)
@@ -83,9 +83,9 @@ def place_images_in_the_right_folders(images_locations, frames_per_second, game_
             # This indicates normal game with card select
             starting_time = game_starting_time_in_seconds[0]
 
-            if (timestamp_in_seconds < starting_time):
+            if timestamp_in_seconds < starting_time:
                 move_file(full_file_path, data_images_set_location_intro)
-            elif (timestamp_in_seconds >= starting_time and (starting_time + seconds_after_starting_comments) < timestamp_in_seconds)
+            elif timestamp_in_seconds >= starting_time and (starting_time + seconds_after_starting_comments) < timestamp_in_seconds:
                 move_file(full_file_path, data_images_set_location_card_select)
             else:
                 move_file(full_file_path, data_images_set_location_game_start)
@@ -94,17 +94,15 @@ def place_images_in_the_right_folders(images_locations, frames_per_second, game_
             draft_starting_time = game_starting_time_in_seconds[0]
             card_select_starting_time = game_starting_time_in_seconds[1]
 
-            if (timestamp_in_seconds < draft_starting_time):
+            if timestamp_in_seconds < draft_starting_time:
                 move_file(full_file_path, data_images_set_location_intro)
-            elif (timestamp_in_seconds >= draft_starting_time and timestamp_in_seconds < card_select_starting_time):
+            elif draft_starting_time <= timestamp_in_seconds < card_select_starting_time:
                 move_file(full_file_path, data_images_set_location_draft)
-            elif (timestamp_in_seconds >= card_select_starting_time and (card_select_starting_time + seconds_after_starting_comments) < timestamp_in_seconds)
+            elif timestamp_in_seconds >= card_select_starting_time and \
+                    (card_select_starting_time + seconds_after_starting_comments) < timestamp_in_seconds:
                 move_file(full_file_path, data_images_set_location_card_select)
             else:
                 move_file(full_file_path, data_images_set_location_game_start)
-
-
-            # This indicates arena
             return
         else:
             # This is an error
