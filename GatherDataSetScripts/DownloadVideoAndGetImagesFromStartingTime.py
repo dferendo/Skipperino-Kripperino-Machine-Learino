@@ -102,9 +102,9 @@ def handle_arena_game(configs, current_time, draft_start_time, card_select_start
 
     if current_time < draft_start_time:
         return configs.intro_location
-    elif current_time < card_select_start_time:
+    elif current_time <= card_select_start_time:
         return configs.draft_location
-    elif current_time < card_select_start_time + seconds_after_starting_comments:
+    elif current_time <= card_select_start_time + seconds_after_starting_comments:
         return configs.card_select_location
 
     return configs.game_play_location
