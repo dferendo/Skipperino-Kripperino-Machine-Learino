@@ -68,28 +68,22 @@ def place_images_in_the_right_folders(configs, video_id, images_locations, frame
     for filename in os.listdir(images_locations):
         timestamp_in_seconds = (int(filename.split('.')[0]) - 1) * (1 / frames_per_second)
         full_file_path = f"{images_locations}\\{filename}"
-        current_folder_selected = configs.game_play_location
 
         # Indicates this does not contains game play
         if len(game_starting_time_in_seconds) == 0:
             current_folder_selected = configs.other_location
         elif len(game_starting_time_in_seconds) == 1:
             # This indicates normal game (Intro -> Card Select -> Game Play)
-            handle_normal_game(configs, timestamp_in_seconds, game_starting_time_in_seconds[0])
+            current_folder_selected = handle_normal_game(configs, timestamp_in_seconds,
+                                                         game_starting_time_in_seconds[0])
         elif len(game_starting_time_in_seconds) == 2:
-            # This indicates area game with Draft pick
-            draft_starting_time = game_starting_time_in_seconds[0]
-            card_select_starting_time = game_starting_time_in_seconds[1]
-
-            if timestamp_in_seconds < draft_starting_time:
-                move_file(full_file_path, data_images_set_location_intro, video_id, filename)
-            elif draft_starting_time <= timestamp_in_seconds < card_select_starting_time:
-                move_file(full_file_path, data_images_set_location_draft, video_id, filename)
-            elif timestamp_in_seconds >= card_select_starting_time and \
-                    (card_select_starting_time + seconds_after_starting_comments) < timestamp_in_seconds:
-                move_file(full_file_path, data_images_set_location_card_select, video_id, filename)
-            else:
-                move_file(full_file_path, data_images_set_location_game_start, video_id, filename)
+            # This indicates arena game with Draft pick
+            current_folder_selected = handle_arena_game(configs, timestamp_in_seconds,
+                                                        game_starting_time_in_seconds[0],
+                                                        game_starting_time_in_seconds[1])
+        else:
+            # This is an error
+            return
 
         move_file(full_file_path, current_folder_selected, video_id, filename)
 
@@ -97,12 +91,23 @@ def place_images_in_the_right_folders(configs, video_id, images_locations, frame
 def handle_normal_game(configs, current_time, card_select_start_time):
 
     if current_time < card_select_start_time:
-        return data_images_set_location_intro
-    elif current_time >= card_select_start_time and \
-            (card_select_start_time + seconds_after_starting_comments) < current_time:
-        return data_images_set_location_card_select
+        return configs.intro_location
+    elif current_time < card_select_start_time + seconds_after_starting_comments:
+        return configs.card_select_location
 
-    return data_images_set_location_game_start
+    return configs.game_play_location
+
+
+def handle_arena_game(configs, current_time, draft_start_time, card_select_start_time):
+
+    if current_time < draft_start_time:
+        return configs.intro_location
+    elif current_time < card_select_start_time:
+        return configs.draft_location
+    elif current_time < card_select_start_time + seconds_after_starting_comments:
+        return configs.card_select_location
+
+    return configs.game_play_location
 
 
 def convert_from_time_to_second(game_starting_time):
