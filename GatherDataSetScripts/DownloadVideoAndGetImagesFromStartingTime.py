@@ -32,7 +32,7 @@ def handle_video_download_and_conversion_to_images(data_set_location, data_video
 
         for video in videos:
 
-            if video.is_video_downloaded or video.game_starting_time == []:
+            if video.is_video_downloaded:
                 continue
 
             try:
@@ -44,7 +44,10 @@ def handle_video_download_and_conversion_to_images(data_set_location, data_video
 
                 with tempfile.TemporaryDirectory() as tmp_dir:
                     convert_video_to_images(input_file_location, tmp_dir, frames_per_second)
-                    place_images_in_the_right_folders(tmp_dir, frames_per_second, video.game_starting_time,
+                    place_images_in_the_right_folders(video.video_id,
+                                                      tmp_dir,
+                                                      frames_per_second,
+                                                      video.game_starting_time,
                                                       data_images_set_location_intro,
                                                       data_images_set_location_card_select,
                                                       data_images_set_location_draft,
@@ -62,7 +65,8 @@ def convert_video_to_images(input_file_location, output_folder, frames_per_secon
     os.system(f"ffmpeg -i \"{input_file_location}\" -vf fps={frames_per_second} \"{output_folder}\\%05d.jpg\"")
 
 
-def place_images_in_the_right_folders(images_locations, frames_per_second, game_starting_time,
+def place_images_in_the_right_folders(video_id, images_locations, frames_per_second,
+                                      game_starting_time,
                                       data_images_set_location_intro,
                                       data_images_set_location_card_select,
                                       data_images_set_location_draft,
@@ -78,31 +82,31 @@ def place_images_in_the_right_folders(images_locations, frames_per_second, game_
 
         # Indicates this does not contains game play
         if len(game_starting_time_in_seconds) == 0:
-            move_file(full_file_path, data_images_set_location_other)
+            move_file(full_file_path, data_images_set_location_other, video_id, filename)
         elif len(game_starting_time_in_seconds) == 1:
             # This indicates normal game with card select
             starting_time = game_starting_time_in_seconds[0]
 
             if timestamp_in_seconds < starting_time:
-                move_file(full_file_path, data_images_set_location_intro)
+                move_file(full_file_path, data_images_set_location_intro, video_id, filename)
             elif timestamp_in_seconds >= starting_time and (starting_time + seconds_after_starting_comments) < timestamp_in_seconds:
-                move_file(full_file_path, data_images_set_location_card_select)
+                move_file(full_file_path, data_images_set_location_card_select, video_id, filename)
             else:
-                move_file(full_file_path, data_images_set_location_game_start)
+                move_file(full_file_path, data_images_set_location_game_start, video_id, filename)
         elif len(game_starting_time_in_seconds) == 2:
             # This indicates area game with Draft pick
             draft_starting_time = game_starting_time_in_seconds[0]
             card_select_starting_time = game_starting_time_in_seconds[1]
 
             if timestamp_in_seconds < draft_starting_time:
-                move_file(full_file_path, data_images_set_location_intro)
+                move_file(full_file_path, data_images_set_location_intro, video_id, filename)
             elif draft_starting_time <= timestamp_in_seconds < card_select_starting_time:
-                move_file(full_file_path, data_images_set_location_draft)
+                move_file(full_file_path, data_images_set_location_draft, video_id, filename)
             elif timestamp_in_seconds >= card_select_starting_time and \
                     (card_select_starting_time + seconds_after_starting_comments) < timestamp_in_seconds:
-                move_file(full_file_path, data_images_set_location_card_select)
+                move_file(full_file_path, data_images_set_location_card_select, video_id, filename)
             else:
-                move_file(full_file_path, data_images_set_location_game_start)
+                move_file(full_file_path, data_images_set_location_game_start, video_id, filename)
             return
         else:
             # This is an error
@@ -115,5 +119,5 @@ def convert_from_time_to_second(game_starting_time):
     return int(split_string[0]) * 60 + int(split_string[1])
 
 
-def move_file(current_location, new_location):
-    shutil.move(current_location, new_location)
+def move_file(current_location, new_location, video_id, file_name):
+    shutil.move(current_location, f"{new_location}\\{video_id}_{file_name}")
