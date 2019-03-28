@@ -7,4 +7,4 @@
 *.pyc
 /DetectNewVideosAndTimestampThem/__pycache__/
 /VideosWithTimestamps/*.mp4
-./DataSet/Images/Train/CardSelect/*.jpg
+*.jpg
