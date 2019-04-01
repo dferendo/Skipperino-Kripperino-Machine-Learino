@@ -7,4 +7,3 @@
 *.pyc
 /DetectNewVideosAndTimestampThem/__pycache__/
 /VideosWithTimestamps/*.mp4
-*.jpg
