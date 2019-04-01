@@ -1,0 +1,6 @@
+cardselect
+draft
+gameplay
+intro
+other
+outro
