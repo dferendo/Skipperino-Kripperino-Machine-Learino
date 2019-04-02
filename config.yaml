@@ -15,9 +15,9 @@ youtube:
   dataset_images_location_other: ./DataSet/Images/Train/Other/
 training:
   train_data_set: ./DataSet/Images/Train/
-  test_data_set: ./DataSet/Images/Test/CardSelect/bS9w8dwD52o_2_007.jpg
+  test_data_set: ./DataSet/Images/Test/
   training_steps: 4000
-  trained_graph_location: ./DataSet/TrainedGraph/retrained_graph.pb
+  trained_model_location: ./DataSet/TrainedGraph/retrained_model.pb
   labels: ./DataSet/TrainedGraph/labels.txt
 detect_new_upload:
   delay: 5

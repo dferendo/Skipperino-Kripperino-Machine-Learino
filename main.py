@@ -7,6 +7,7 @@ import GatherDataSetScripts.GetAllVideosIds as GetAllVideosIds
 import GatherDataSetScripts.GetGameStartingTime as GetGameStartingTime
 import GatherDataSetScripts.DownloadVideoAndGetImagesFromStartingTime as DownloadVideoAndGetImagesFromStartingTime
 import DetectNewVideosAndTimestampThem.DetectNewVideoUpload as DetectNewVideoUpload
+import TrainBot.LabelImage as LabelImage
 from GatherDataSetScripts.__init__ import GatherDataConfigs
 
 config_file_not_loaded = open('config.yaml', 'r')
@@ -55,16 +56,11 @@ def train_cnn():
 
 
 def validate_cnn():
-    graph_location = os.path.abspath(config_file['training']['trained_graph_location'])
+    trained_model = os.path.abspath(config_file['training']['trained_model_location'])
     labels_location = os.path.abspath(config_file['training']['labels'])
     test_location = os.path.abspath(config_file['training']['test_data_set'])
 
-    os.system(f"python ./TrainBot/LabelImage.py "
-              f"--graph=\"{graph_location}\" "
-              f"--labels=\"{labels_location}\" "
-              f"--input_layer=Placeholder "
-              f"--output_layer=final_result "
-              f"--image=\"{test_location}\" ")
+    LabelImage.label_images(trained_model, test_location, labels_location)
 
 
 def detect_new_videos():
